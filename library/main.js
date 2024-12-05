@@ -2,17 +2,30 @@
 const books = document.querySelector ('.books');
 
 //array of books
-const myLibrary = [{
-    title: 'Book1',
-    author: 'me',
-    pages: 500,
-    read: true,
-},{
-    title: 'Book2',
-    author: 'You',
-    pages: 5000,
-    read: false, 
-}];
+let myLibrary = [
+];
+
+function addLocalStorage(){
+ /*   localStorage.setItem(
+        'library',
+        JSON.stringify([
+            {
+                title: 'Book1',
+                author: 'me',
+                pages: 500,
+                read: true,
+            },
+            {
+                title: 'Book2',
+                author: 'You',
+                pages: 5000,
+                read: false, 
+            }
+        ])
+    );*/
+    myLibrary = JSON.parse(localStorage.getItem("library")) || [];
+    renderBooks();
+}
 
 //helper function to create html elements with textcontent and classes
 function createBookElement(el, content, className){
@@ -75,6 +88,11 @@ function createIcons(){
     return div;
 }
 
+function deleteBook(index){
+    myLibrary.splice(index,1);
+    renderBooks();
+}
+
 //function to create all of the book on the book dom card
 function createBookItem (book,index){
     const bookItem = document.createElement ('div');
@@ -95,16 +113,21 @@ function createBookItem (book,index){
     bookItem.appendChild(createIcons());
     bookItem.appendChild(createEditIcon(book));
 
+    bookItem.querySelector('.delete').addEventListener('click', () => {
+        deleteBook(index);
+    })
+
     books.insertAdjacentElement("afterbegin", bookItem);
 }
 
 //function to render all the books
 function renderBooks () {
+    books.textContent = "";
     myLibrary.map((book, index) => {
         createBookItem(book,index)
     });
 }
 
 //render on page load
-renderBooks();
+addLocalStorage();
 
