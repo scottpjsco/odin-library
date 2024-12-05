@@ -1,5 +1,7 @@
+//books - main div holding all the books
 const books = document.querySelector ('.books');
 
+//array of books
 const myLibrary = [{
     title: 'Book1',
     author: 'me',
@@ -12,6 +14,7 @@ const myLibrary = [{
     read: false, 
 }];
 
+//helper function to create html elements with textcontent and classes
 function createBookElement(el, content, className){
     const element = document.createElement(el);
     element.textContent = content;
@@ -19,6 +22,7 @@ function createBookElement(el, content, className){
     return element;
 }
 
+//helper function to create an input checkbox for if a book is read w/ event listener
 function createReadElement(bookItem, book) {
     let read = document.createElement("div");
     read.setAttribute("class", "book-read");
@@ -29,11 +33,11 @@ function createReadElement(bookItem, book) {
         if(e.target.checked){
             bookItem.setAttribute('class', 'card book read-checked');
             book.read = true;
-            renderAndSave();
+            renderBooks();
         } else {
             bookItem.setAttribute('class', 'card book read-unchecked');
             book.read = false;
-            renderAndSave();
+            renderBooks();
         }
     })
     if(book.read){
@@ -44,10 +48,18 @@ function createReadElement(bookItem, book) {
     return read;
 }
 
+//create the edit icon w/event listener
 function createEditIcon(book){
-    return createBookElement('div', null, "");
+    const editIcon = document.createElement('img');
+    editIcon.src = '../icons/pencil.svg';
+    editIcon.setAttribute('class', 'edit-icon');
+    editIcon.addEventListener('click', (e) => {
+        console.log(book);
+    })
+    return editIcon;
 }
 
+//create dummy icons, they dont do anything
 function createIcons(){
     const div = createBookElement('div' , null, 'icons');
     const icon1 = document.createElement('img');
@@ -63,6 +75,7 @@ function createIcons(){
     return div;
 }
 
+//function to create all of the book on the book dom card
 function createBookItem (book,index){
     const bookItem = document.createElement ('div');
     bookItem.setAttribute('id', index)
@@ -85,10 +98,13 @@ function createBookItem (book,index){
     books.insertAdjacentElement("afterbegin", bookItem);
 }
 
+//function to render all the books
 function renderBooks () {
     myLibrary.map((book, index) => {
         createBookItem(book,index)
     });
 }
+
+//render on page load
 renderBooks();
 
