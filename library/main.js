@@ -13,7 +13,7 @@ window.addEventListener('click', (e) => {
 //button to close the modal
 span.addEventListener('click', () => {
     modal.style.display = 'none';
-})
+});
 
 addBook.addEventListener('click', () => {
     modal.style.display = 'block';
@@ -51,7 +51,18 @@ addBookForm.addEventListener('submit', (e) => {
     if (!newBook['book-read']){
         newBook['book-read'] = false;
     }
-    addBookToLibrary(newBook['book-title'],newBook['book-author'],newBook['book-pages'],newBook['book-read']);
+    if(document.querySelector('.form-title').textContent === "Edit Book"){
+        let id = e.target.id;
+        let editBook = myLibrary.filter((book) => book.id == id)[0];
+        editBook.title = newBook['book-title'];
+        editBook.author = newBook['book-author'];
+        editBook.pages = newBook['book-pages'];
+        editBook.read = newBook['book-read'];
+        saveAndRenderBooks();
+    } else {
+        addBookToLibrary(newBook['book-title'],newBook['book-author'],newBook['book-pages'],newBook['book-read']);
+    }
+    
     addBookForm.reset();
     modal.style.display = 'none';
 });
@@ -119,6 +130,7 @@ function fillOutEditForm(book){
     modal.style.display = 'block';
     document.querySelector('.form-title').textContent = "Edit Book";
     document.querySelector('.form-add-button').textContent = "Edit";
+    document.querySelector('.add-book-form').setAttribute('id', book.id);
     document.querySelector('#book-title').value = book.title || "";
     document.querySelector('#book-author').value = book.author || "";
     document.querySelector('#book-pages').value = book.pages || "";
