@@ -10,6 +10,7 @@ window.addEventListener('click', (e) => {
     }
 })
 
+//button to close the modal
 span.addEventListener('click', () => {
     modal.style.display = 'none';
 })
@@ -19,6 +20,41 @@ addBook.addEventListener('click', () => {
     document.querySelector('form-title').textContent = "Add Book";
     document.querySelector('form-add-button').textContent = "Add";
 })
+
+function Book(title,author,pages,read){
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
+    this.id = Math.floor(Math.random() * 100000000);
+}
+
+function addBookToLibrary(title,author,pages,read){
+    myLibrary.push(new Book(title,author,pages,read))
+    saveAndRenderBooks();
+}
+
+const addBookForm = document.querySelector('.add-book-form');
+addBookForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const data = new FormData(e.target);
+    let newBook = {};
+    for(let [name,value] of data){
+        if(name === 'book-read'){
+            newBook['book-read'] = true;
+        }else {
+            newBook[name] = value || "";
+        }
+    }
+
+    if (!newBook['book-read']){
+        newBook['book-read'] = false;
+    }
+    addBookToLibrary(newBook['book-title'],newBook['book-author'],newBook['book-pages'],newBook['book-read']);
+    addBookForm.reset();
+    modal.style.display = 'none';
+});
 
 //array of books
 let myLibrary = [];
@@ -79,13 +115,23 @@ function createReadElement(bookItem, book) {
     return read;
 }
 
+function fillOutEditForm(book){
+    modal.style.display = 'block';
+    document.querySelector('.form-title').textContent = "Edit Book";
+    document.querySelector('.form-add-button').textContent = "Edit";
+    document.querySelector('#book-title').value = book.title || "";
+    document.querySelector('#book-author').value = book.author || "";
+    document.querySelector('#book-pages').value = book.pages || "";
+    document.querySelector('#book-read').checked = book.read || "";   
+}
+
 //create the edit icon w/event listener
 function createEditIcon(book){
     const editIcon = document.createElement('img');
     editIcon.src = '../icons/pencil.svg';
     editIcon.setAttribute('class', 'edit-icon');
-    editIcon.addEventListener('click', (e) => {
-        console.log(book);
+    editIcon.addEventListener('click', () => {
+        fillOutEditForm(book);
     })
     return editIcon;
 }
